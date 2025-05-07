@@ -37,6 +37,7 @@ from mito_ai.utils.telemetry_utils import (
     log,
     log_ai_completion_success,
 )
+from mito_ai.completion_handlers.open_ai_models import MESSAGE_TYPE_TO_MODEL
 
 OPENAI_MODEL_FALLBACK = "gpt-4.1"
 
@@ -290,6 +291,10 @@ This attribute is observed by the websocket provider to push the error to the cl
         try:
             # Reset the last error
             self.last_error = None
+
+            # For inline code completion, force the gemini-2.0-flash model
+            if message_type == MESSAGE_TYPE_TO_MODEL[MessageType.INLINE_COMPLETION]:
+                model = 'gemini-2.0-flash'
 
             model = self._resolve_model(model)
 
